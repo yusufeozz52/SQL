@@ -1,5 +1,7 @@
-# SQL
-SQL kütüphanesi
+# Kapsamlı SQL 101 Başucu Rehberi ve İpucu Listesi
+> HackerRank ve pratik çalışmalarım boyunca sürekli dönüp baktığım sorgu kalıplarını, unuttuğumda hatırlamak ve tek bir yerde toplamak için hazırladığım SQL notları.
+
+---
 
 ## 📌 İçindekiler
 1. [SQL Sorgularının Çalışma Sırası](#calisma-sirasi)
@@ -30,9 +32,7 @@ Hatasız ve performanslı sorgular yazabilmek için yazım sırası ile arka pla
 10. LIMIT      (Getirilecek satır sayısı sınırlandırılır)
 ```
 
-(Not: SELECT sözcüğü sorgunun en başında kullanılsa da,
-veritabanı motorları öncelikle FROM ve JOIN komutlarını çalıştırarak kaynak veriyi toplayıp,
-WHERE ile de filtreleme yaptığı için listeyi işleme alınma sıralarını dikkate alarak oluşturdum.)
+Not: Kod yazarken SELECT ile başlasak da veritabanı arka planda işe önce FROM ve JOIN ile tabloları toplayarak başlıyor. Sorgularımı yazarken ve debug ederken işimi çok kolaylaştırdığı için bu listeyi söz dizimine göre değil, veritabanının arka plandaki çalışma mantığına göre sıraladım.
 
 ---
 
@@ -210,9 +210,51 @@ Matematiksel ve Toplulaştırma Fonksiyonları
 <a name="veritabani-semasi"></a>
 ## 🗄️ Örneklerde Kullanılan Veritabanı Şeması
 
-[MÜŞTERİLER] 1 ─── N [SİPARİŞLER] 1 ─── N [SİPARİŞ_DETAYLARI] N ─── 1 [ÜRÜNLER]
-                         │
-                         N ─── 1 [ÇALIŞANLAR] N ─── 1 [DEPARTMANLAR]
+```mermaid
+erDiagram
+    DEPARTMANLAR ||--o{ CALISANLAR : "barındırır"
+    CALISANLAR ||--o{ SIPARISLER : "işler"
+    MUSTERILER ||--o{ SIPARISLER : "verir"
+    SIPARISLER ||--o{ SIPARIS_DETAYLARI : "içerir"
+    URUNLER ||--o{ SIPARIS_DETAYLARI : "listelenir"
+
+    MUSTERILER {
+        int customer_id PK
+        string first_name
+        string last_name
+        string city
+        boolean is_active
+    }
+    SIPARISLER {
+        int order_id PK
+        int customer_id FK
+        int employee_id FK
+        date order_date
+        decimal total_amount
+    }
+    SIPARIS_DETAYLARI {
+        int order_detail_id PK
+        int order_id FK
+        int product_id FK
+        int quantity
+    }
+    URUNLER {
+        int product_id PK
+        string product_name
+        decimal price
+        int category_id
+    }
+    CALISANLAR {
+        int employee_id PK
+        string first_name
+        decimal salary
+        int department_id FK
+    }
+    DEPARTMANLAR {
+        int department_id PK
+        string department_name
+    }
+```
 
 
    ---                      
